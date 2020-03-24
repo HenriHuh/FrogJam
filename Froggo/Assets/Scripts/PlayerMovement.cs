@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public LineRenderer line;
     public Collider aimCollider;
     public Transform gravityObjectParent;
+    public List<TrailRenderer> trails;
 
     //Other
     GameObject currentPlatform;
@@ -17,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rb;
     bool aiming = false, onPlanet, swapped;
     List<Transform> gravityObjectPool = new List<Transform>();
-
+    int trailIndex = 0;
 
     void Start()
     {
@@ -38,34 +39,40 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        trails[trailIndex].transform.position = transform.position + Vector3.down * 0.5f;
+
         if (!onPlanet)
         {
-            //Do planet gravity stuff
-            //foreach (Transform t in gravityObjectPool)
-            //{
-            //    Vector3 dir = transform.position - t.position;
-            //    dir.y = 0;
-            //    float dist = dir.magnitude;
-            //    float magnitude = (rb.mass * t.GetComponent<Rigidbody>().mass) / Mathf.Pow(dist, 2);
-            //    Vector3 grav = dir.normalized * magnitude;
-            //    rb.AddForce(grav);
-            //}
 
-            foreach (Transform t in gravityObjectPool)
-            {
-                Vector3 dir = (t.position - transform.position).normalized;
-                float fixedMagnitude = (10 - (transform.position - t.position).magnitude);
-                fixedMagnitude = fixedMagnitude < 0 ? 0 : fixedMagnitude;
-                rb.AddForce(dir * fixedMagnitude);
-            }
+            ApplyGravitation();
 
             return;
         }
 
-
-
         transform.position = currentPlatform.transform.position;
 
+        GetInput();
+
+    }
+
+    public void StartGame()
+    {
+        Time.timeScale = 1;
+    }
+
+    void ApplyGravitation()
+    {
+        foreach (Transform t in gravityObjectPool)
+        {
+            Vector3 dir = (t.position - transform.position).normalized;
+            float fixedMagnitude = (10 - (transform.position - t.position).magnitude);
+            fixedMagnitude = fixedMagnitude < 0 ? 0 : fixedMagnitude;
+            rb.AddForce(dir * fixedMagnitude * 0.8f);
+        }
+    }
+    
+    void GetInput()
+    {
         if (aiming)
         {
             //Raycast
@@ -105,26 +112,49 @@ public class PlayerMovement : MonoBehaviour
             onPlanet = true;
         }
 
-        if (col.gameObject.tag == "Edge" && !swapped)
+        if (col.gameObject.tag == "Edge")
         {
-            swapped = true;
-            StartCoroutine(SwapSide());
-            Vector3 npos = transform.position;
-            if (Mathf.Abs(transform.position.x) > Mathf.Abs(transform.position.z))
+            if (!swapped)
             {
-                npos.x *= -1;
-                transform.position = npos;
+
+                //Swap player to opposite side
+                swapped = true;
+                StartCoroutine(SwapSide());
+                Vector3 npos = transform.position;
+                if (Mathf.Abs(transform.position.x) > Mathf.Abs(transform.position.z))
+                {
+                    npos.x *= -1;
+                    transform.position = npos;
+                }
+                else
+                {
+                    npos.z *= -1;
+                    transform.position = npos;
+                }
+
+                //Swap trail to prevent glitching
+                trailIndex++;
+                if (trailIndex == trails.Count)
+                {
+                    trailIndex = 0;
+                }
+                trails[trailIndex].gameObject.SetActive(false);
             }
             else
             {
-                npos.z *= -1;
-                transform.position = npos;
+                swapped = false;
             }
         }
     }
 
+
+
     IEnumerator SwapSide()
     {
+        yield return new WaitForEndOfFrame();
+        trails[trailIndex].gameObject.SetActive(true);
+        trails[trailIndex].Clear();
+
         yield return new WaitForSeconds(0.25f);
         swapped = false;
         yield return null;
@@ -137,7 +167,7 @@ public class PlayerMovement : MonoBehaviour
         float magnitude = Vector3.Distance(transform.position, aimDir);
         aimDir = (transform.position - aimDir).normalized;
         rb.velocity = Vector3.zero;
-        rb.AddForce(aimDir * 150 * magnitude);
+        rb.AddForce(aimDir * 200 * magnitude);
         onPlanet = false;
         line.gameObject.SetActive(false);
         currentPlatform.GetComponent<Rigidbody>().AddForce(aimDir * -20 * magnitude);

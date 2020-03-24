@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Base
   - Edge
+  - PushAway
   layers:
   - Default
   - TransparentFX
