@@ -9,6 +9,7 @@ public class Planet : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
+        rb.AddForce(Vector3.right * Random.Range(-100, 100) + Vector3.forward * Random.Range(-100, 100));
     }
 
     void Update()

@@ -110,6 +110,7 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = Vector3.zero;
             transform.position = col.gameObject.transform.position;
             onPlanet = true;
+            PointManager.instance.EndDrift();
         }
 
         if (col.gameObject.tag == "Edge")
@@ -145,6 +146,13 @@ public class PlayerMovement : MonoBehaviour
                 swapped = false;
             }
         }
+
+        if (col.tag == "Bubble")
+        {
+            col.gameObject.SetActive(false);
+            PointManager.instance.driftMultiplier++;
+        }
+            
     }
 
 
@@ -171,6 +179,7 @@ public class PlayerMovement : MonoBehaviour
         onPlanet = false;
         line.gameObject.SetActive(false);
         currentPlatform.GetComponent<Rigidbody>().AddForce(aimDir * -20 * magnitude);
+        PointManager.instance.StartDrift();
         //StartCoroutine(DelayedColliderFix());
     }
 
