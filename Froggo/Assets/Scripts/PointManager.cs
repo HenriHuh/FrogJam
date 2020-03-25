@@ -43,7 +43,23 @@ public class PointManager : MonoBehaviour
         {
             StopCoroutine(driftRoutine);
         }
+
         driftPoints = driftPoints * driftMultiplier;
+
+        //Set color
+        if (driftPoints > 50000)
+        {
+            driftPointsTxt.color = superColor;
+        }
+        else if (driftPoints > 10000)
+        {
+            driftPointsTxt.color = highColor;
+        }
+        else if (driftPoints > 1000)
+        {
+            driftPointsTxt.color = medColor;
+        }
+
         totalPoints += driftPoints;
         driftPointsTxt.fontSize += 4;
         driftPointsTxt.text = driftPoints.ToString();

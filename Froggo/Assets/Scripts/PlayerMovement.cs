@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    //Handles input, gravity and collisions
+
 
     //Assign in editor
     public LayerMask aimLayer;
@@ -11,7 +13,8 @@ public class PlayerMovement : MonoBehaviour
     public Collider aimCollider;
     public Transform gravityObjectParent;
     public List<TrailRenderer> trails;
-
+    public Renderer playerRenderer;
+    public Material idle, jump;
     //Other
     GameObject currentPlatform;
     Vector3 aimDir;
@@ -43,6 +46,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (!onPlanet)
         {
+            Vector3 moveDirection = rb.velocity;
+            transform.LookAt(moveDirection);
 
             ApplyGravitation();
 
@@ -83,6 +88,8 @@ public class PlayerMovement : MonoBehaviour
             aimDir = Vector3.MoveTowards(transform.position, hit.point, 5);
             aimDir.y = transform.position.y;
 
+            transform.LookAt(aimDir);
+            transform.Rotate(Vector3.right * 180);
             //Display line
             line.gameObject.SetActive(true);
             line.SetPosition(0, transform.position);
@@ -111,6 +118,7 @@ public class PlayerMovement : MonoBehaviour
             transform.position = col.gameObject.transform.position;
             onPlanet = true;
             PointManager.instance.EndDrift();
+            playerRenderer.material = idle;
         }
 
         if (col.gameObject.tag == "Edge")
@@ -149,6 +157,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (col.tag == "Bubble")
         {
+            GameManager.instance.EatBubble();
             col.gameObject.SetActive(false);
             PointManager.instance.driftMultiplier++;
         }
@@ -181,6 +190,8 @@ public class PlayerMovement : MonoBehaviour
         currentPlatform.GetComponent<Rigidbody>().AddForce(aimDir * -20 * magnitude);
         PointManager.instance.StartDrift();
         //StartCoroutine(DelayedColliderFix());
+        playerRenderer.material = jump;
+
     }
 
     IEnumerator DelayedColliderFix()
