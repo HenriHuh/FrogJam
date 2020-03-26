@@ -15,12 +15,17 @@ public class GameManager : MonoBehaviour
     public float maxWater;
     public GameObject gameUI, startScreen, endScreen;
     public Text endPointsTxt;
+    public GameObject waterTank;
+
     //Private
+    Coroutine waterPop;
+    Vector3 waterTankScale;
     float waterRemaining;
     bool end;
 
     void Start()
     {
+        waterTankScale = waterTank.transform.localScale;
         Time.timeScale = 0;
         waterRemaining = maxWater;
         instance = this;
@@ -42,6 +47,26 @@ public class GameManager : MonoBehaviour
     {
         waterRemaining = waterRemaining + 5 > maxWater ? maxWater : waterRemaining + 5;
         Invoke("NewBubble", Random.Range(1.0f,3.0f));
+        if (waterPop != null)
+        {
+            StopCoroutine(waterPop);
+        }
+        waterTank.transform.localScale = waterTankScale;
+        waterPop = StartCoroutine(PopObject(waterTank));
+    }
+
+    IEnumerator PopObject(GameObject obj)
+    {
+        float t = 0;
+        Vector3 scale = obj.transform.localScale;
+        waterTank.transform.localScale = waterTankScale * 1.25f;
+        while (t < 0.5f)
+        {
+            t += Time.deltaTime;
+            waterTank.transform.localScale = Vector3.Lerp(waterTank.transform.localScale, waterTankScale, Time.deltaTime * 5);
+            yield return null;
+        }
+        yield return null;
     }
 
     public void Quit()
@@ -53,6 +78,7 @@ public class GameManager : MonoBehaviour
     {
         Vector3 vec = new Vector3(Random.Range(-9.0f, 9.0f), 0, Random.Range(-9.0f, 9.0f));
         Instantiate(bubblePrefab, vec, Quaternion.identity);
+        SoundManager.instance.PlaySound(SoundManager.instance.bubbleSpawn);
     }
 
     public void RestartGame()

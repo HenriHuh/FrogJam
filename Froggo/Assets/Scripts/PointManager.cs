@@ -101,6 +101,7 @@ public class PointManager : MonoBehaviour
                 driftPointsTxt.fontSize += 4;
                 driftPointsTxt.color = medColor;
                 targetColor = highColor;
+                SoundManager.instance.PlaySound(SoundManager.instance.combo1);
                 PopDriftPoint();
                 popped1 = true;
             }
@@ -109,6 +110,7 @@ public class PointManager : MonoBehaviour
                 driftPointsTxt.fontSize += 4;
                 driftPointsTxt.color = highColor;
                 targetColor = superColor;
+                SoundManager.instance.PlaySound(SoundManager.instance.combo2);
                 PopDriftPoint();
                 popped2 = true;
             }
@@ -117,6 +119,7 @@ public class PointManager : MonoBehaviour
                 driftPointsTxt.fontSize += 4;
                 driftPointsTxt.color = superColor;
                 targetColor = superColor;
+                SoundManager.instance.PlaySound(SoundManager.instance.combo3);
                 PopDriftPoint();
                 popped3 = true;
             }
@@ -130,6 +133,7 @@ public class PointManager : MonoBehaviour
 
     void PopDriftPoint()
     {
+
         if (popRoutine != null)
         {
             StopCoroutine(popRoutine);

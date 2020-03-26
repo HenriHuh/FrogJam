@@ -51,13 +51,60 @@ public class PlayerMovement : MonoBehaviour
 
             ApplyGravitation();
 
+            Wrap();
+
             return;
         }
+
 
         transform.position = currentPlatform.transform.position;
 
         GetInput();
 
+    }
+
+    void Wrap()
+    {
+        if (transform.position.x > 12)
+        {
+            Vector3 pos = transform.position;
+            pos.x = -12;
+            transform.position = pos;
+            ChangeTrail();
+        }
+        else if (transform.position.x < -12)
+        {
+            Vector3 pos = transform.position;
+            pos.x = 12;
+            transform.position = pos;
+            ChangeTrail();
+        }
+        if (transform.position.z > 12)
+        {
+            Vector3 pos = transform.position;
+            pos.z = -12;
+            transform.position = pos;
+            ChangeTrail();
+        }
+        else if (transform.position.z < -12)
+        {
+            Vector3 pos = transform.position;
+            pos.z = 12;
+            transform.position = pos;
+            ChangeTrail();
+        }
+    }
+
+    void ChangeTrail()
+    {
+        trailIndex++;
+        if (trailIndex == trails.Count)
+        {
+            trailIndex = 0;
+        }
+        trails[trailIndex].gameObject.SetActive(false);
+
+        StartCoroutine(SwapSide());
     }
 
     public void StartGame()
@@ -119,47 +166,51 @@ public class PlayerMovement : MonoBehaviour
             onPlanet = true;
             PointManager.instance.EndDrift();
             playerRenderer.material = idle;
+            SoundManager.instance.EndDistort();
+            SoundManager.instance.PlaySound(SoundManager.instance.land);
+
         }
 
-        if (col.gameObject.tag == "Edge")
-        {
-            if (!swapped)
-            {
+        //if (col.gameObject.tag == "Edge")
+        //{
+        //    if (!swapped)
+        //    {
 
-                //Swap player to opposite side
-                swapped = true;
-                StartCoroutine(SwapSide());
-                Vector3 npos = transform.position;
-                if (Mathf.Abs(transform.position.x) > Mathf.Abs(transform.position.z))
-                {
-                    npos.x *= -1;
-                    transform.position = npos;
-                }
-                else
-                {
-                    npos.z *= -1;
-                    transform.position = npos;
-                }
+        //        //Swap player to opposite side
+        //        swapped = true;
+        //        StartCoroutine(SwapSide());
+        //        Vector3 npos = transform.position;
+        //        if (Mathf.Abs(transform.position.x) > Mathf.Abs(transform.position.z))
+        //        {
+        //            npos.x *= -1;
+        //            transform.position = npos;
+        //        }
+        //        else
+        //        {
+        //            npos.z *= -1;
+        //            transform.position = npos;
+        //        }
 
-                //Swap trail to prevent glitching
-                trailIndex++;
-                if (trailIndex == trails.Count)
-                {
-                    trailIndex = 0;
-                }
-                trails[trailIndex].gameObject.SetActive(false);
-            }
-            else
-            {
-                swapped = false;
-            }
-        }
+        //        //Swap trail to prevent glitching
+        //        trailIndex++;
+        //        if (trailIndex == trails.Count)
+        //        {
+        //            trailIndex = 0;
+        //        }
+        //        trails[trailIndex].gameObject.SetActive(false);
+        //    }
+        //    else
+        //    {
+        //        swapped = false;
+        //    }
+        //}
 
         if (col.tag == "Bubble")
         {
             GameManager.instance.EatBubble();
             col.gameObject.SetActive(false);
             PointManager.instance.driftMultiplier++;
+            SoundManager.instance.PlaySound(SoundManager.instance.bubbleEat);
         }
             
     }
@@ -168,12 +219,12 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator SwapSide()
     {
+        trails[trailIndex].Clear();
         yield return new WaitForEndOfFrame();
         trails[trailIndex].gameObject.SetActive(true);
-        trails[trailIndex].Clear();
 
-        yield return new WaitForSeconds(0.25f);
-        swapped = false;
+        //yield return new WaitForSeconds(0.25f);
+        //swapped = false;
         yield return null;
     }
 
@@ -182,6 +233,7 @@ public class PlayerMovement : MonoBehaviour
     {
         aimDir.y = 0;
         float magnitude = Vector3.Distance(transform.position, aimDir);
+        magnitude = magnitude < 2 ? 2 : magnitude;
         aimDir = (transform.position - aimDir).normalized;
         rb.velocity = Vector3.zero;
         rb.AddForce(aimDir * 200 * magnitude);
@@ -191,6 +243,7 @@ public class PlayerMovement : MonoBehaviour
         PointManager.instance.StartDrift();
         //StartCoroutine(DelayedColliderFix());
         playerRenderer.material = jump;
+        SoundManager.instance.MusicDistort();
 
     }
 
