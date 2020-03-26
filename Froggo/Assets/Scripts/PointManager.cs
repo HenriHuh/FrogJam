@@ -13,7 +13,8 @@ public class PointManager : MonoBehaviour
     public Color medColor, highColor, superColor;
 
     //Private
-    int totalPoints = 0, driftPoints = 0;
+    [HideInInspector]public int totalPoints = 0;
+    int driftPoints = 0;
     int driftStartFont;
     [HideInInspector]public int driftMultiplier = 1;
     Coroutine driftRoutine, fadeTextRoutine, popRoutine;

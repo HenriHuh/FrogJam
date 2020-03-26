@@ -112,10 +112,10 @@ MonoBehaviour:
     y: 30
     width: 1920
     height: 947
-  m_MinSize: {x: 881, y: 492}
-  m_MaxSize: {x: 16006, y: 14042}
+  m_MinSize: {x: 880, y: 492}
+  m_MaxSize: {x: 16005, y: 14042}
   vertical: 0
-  controlID: 157
+  controlID: 160
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -419,23 +419,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
+      m_SelectedIDs: 207cffff
       m_LastClickedID: 0
-      m_ExpandedIDs: 6cfbffff
+      m_ExpandedIDs: 00a1ffff04a1ffff08a1ffffbac6ffff3eccffff7cd0ffff6cfbfffff835000048360000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: Button (1)
+        m_OriginalName: Button (1)
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: -14662
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 8}
       m_SearchString: 
@@ -481,9 +481,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 606.7166, y: -140.91321, z: -713.2894}
+    m_Target: {x: -1.6199999, y: 0, z: 2.58}
     speed: 2
-    m_Value: {x: 606.7166, y: -140.91321, z: -713.2894}
+    m_Value: {x: -1.6199999, y: 0, z: 2.58}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -529,13 +529,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.008345041, y: -0.9323386, z: 0.36088008, w: 0.021546906}
+    m_Target: {x: 0.119134314, y: -0.87624943, z: 0.2785706, w: 0.3747214}
     speed: 2
-    m_Value: {x: 0.008344943, y: -0.93232757, z: 0.36087582, w: 0.02154665}
+    m_Value: {x: 0.119132906, y: -0.8762391, z: 0.2785673, w: 0.374717}
   m_Size:
-    m_Target: 1269.3982
+    m_Target: 5.7157674
     speed: 2
-    m_Value: 1269.3982
+    m_Value: 5.7157674
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -668,19 +668,19 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Art/Materials
+    - Assets/Prefabs
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Art/Materials
+  - Assets/Prefabs
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\Henri\Desktop\FrogJam\Froggo
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 10}
-    m_SelectedIDs: 1a370000
-    m_LastClickedID: 14106
+    m_SelectedIDs: 20370000
+    m_LastClickedID: 14112
     m_ExpandedIDs: 000000000e3700001437000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -736,7 +736,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c62300004a2700000227000000000000e42b0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -788,7 +788,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 749
-    width: 1488
+    width: 1499
     height: 250
   m_ViewDataDictionary: {fileID: 0}
 --- !u!114 &20
