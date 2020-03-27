@@ -38,6 +38,18 @@ public class PointManager : MonoBehaviour
         driftPointsTxt.color = Color.white;
         driftPointsTxt.fontSize = driftStartFont;
     }
+
+    public void ResetDrift()
+    {
+
+        if (driftRoutine != null)
+        {
+            StopCoroutine(driftRoutine);
+        }
+        driftPoints = 0;
+        driftMultiplier = 1;
+        StartDrift();
+    }
     public void EndDrift()
     {
         if (driftRoutine != null)

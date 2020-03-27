@@ -8,6 +8,7 @@ TagManager:
   - Edge
   - PushAway
   - Bubble
+  - BlackHole
   layers:
   - Default
   - TransparentFX

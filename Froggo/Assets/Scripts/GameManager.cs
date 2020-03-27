@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     Vector3 waterTankScale;
     float waterRemaining;
     bool end;
+    [HideInInspector] public bool started = false;
 
     void Start()
     {
@@ -83,6 +84,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        SoundManager.instance.PlaySound(SoundManager.instance.menuClick);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -96,6 +98,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        started = true;
+        SoundManager.instance.PlaySound(SoundManager.instance.menuClick);
         Time.timeScale = 1;
     }
 }

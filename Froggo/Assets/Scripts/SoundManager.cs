@@ -8,6 +8,8 @@ public class SoundManager : MonoBehaviour
 
     public AudioSource effects, music;
     public AudioReverbFilter musicFilter;
+    public AudioReverbZone revFilter;
+
     public AudioClip
         stretch,
         jump,
@@ -40,10 +42,10 @@ public class SoundManager : MonoBehaviour
     public void MusicDistort()
     {
         distort = StartCoroutine(Distortion());
-        musicFilter.reverbPreset = AudioReverbPreset.Underwater;
     }
     public void EndDistort()
     {
+        revFilter.minDistance = 0;
         musicFilter.reverbPreset = AudioReverbPreset.Off;
         music.volume = musicVolume;
         if (distort != null)
@@ -55,16 +57,24 @@ public class SoundManager : MonoBehaviour
     IEnumerator Distortion()
     {
         float t = 0;
-        musicFilter.room /= 2;
         while (t < 0.75f)
         {
             t += Time.deltaTime;
-            music.volume -= Time.deltaTime / 5;
-            musicFilter.room += Time.deltaTime * 25;
 
             yield return null;
         }
+        //musicFilter.reverbPreset = AudioReverbPreset.Underwater;
+        musicFilter.room /= 2;
+        revFilter.minDistance = 15;
+        while (t < 1.5f)
+        {
+            t += Time.deltaTime;
+            revFilter.minDistance += Time.deltaTime * 20;
+            music.volume -= Time.deltaTime / 6;
+            //musicFilter.room += Time.deltaTime * 35;
 
+            yield return null;
+        }
         yield return null;
     }
 }

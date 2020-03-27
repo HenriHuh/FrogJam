@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     public List<TrailRenderer> trails;
     public Renderer playerRenderer;
     public Material idle, jump;
+    public float gravityBlackHole, gravityPlanet;
+
     //Other
     GameObject currentPlatform;
     Vector3 aimDir;
@@ -42,6 +44,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!GameManager.instance.started)
+        {
+            return;
+        }
+
         trails[trailIndex].transform.position = transform.position + Vector3.down * 0.5f;
 
         if (!onPlanet)
@@ -117,10 +124,20 @@ public class PlayerMovement : MonoBehaviour
         foreach (Transform t in gravityObjectPool)
         {
             Vector3 dir = (t.position - transform.position).normalized;
-            float fixedMagnitude = (10 - (transform.position - t.position).magnitude);
+            float fixedMagnitude = (16 - (transform.position - t.position).magnitude);
             fixedMagnitude = fixedMagnitude < 0 ? 0 : fixedMagnitude;
-            rb.AddForce(dir * fixedMagnitude * 0.8f);
+            float multiplier;
+            if (t.tag == "BlackHole")
+            {
+                multiplier = gravityBlackHole;
+            }
+            else
+            {
+                multiplier = gravityPlanet;
+            }
+            rb.AddForce(dir * fixedMagnitude * multiplier);
         }
+        
     }
     
     void GetInput()
@@ -145,6 +162,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            SoundManager.instance.PlaySound(SoundManager.instance.stretch);
             aiming = true;
         }
         else if (Input.GetKeyUp(KeyCode.Mouse0) && aiming)
@@ -212,9 +230,14 @@ public class PlayerMovement : MonoBehaviour
             PointManager.instance.driftMultiplier++;
             SoundManager.instance.PlaySound(SoundManager.instance.bubbleEat);
         }
-            
-    }
 
+        if (col.tag == "BlackHole" && !onPlanet)
+        {
+            PointManager.instance.ResetDrift();
+            rb.velocity *= 0.65f;
+        }
+
+    }
 
 
     IEnumerator SwapSide()
@@ -236,13 +259,14 @@ public class PlayerMovement : MonoBehaviour
         magnitude = magnitude < 2 ? 2 : magnitude;
         aimDir = (transform.position - aimDir).normalized;
         rb.velocity = Vector3.zero;
-        rb.AddForce(aimDir * 200 * magnitude);
+        rb.AddForce(aimDir * 250 * magnitude);
         onPlanet = false;
         line.gameObject.SetActive(false);
         currentPlatform.GetComponent<Rigidbody>().AddForce(aimDir * -20 * magnitude);
         PointManager.instance.StartDrift();
         //StartCoroutine(DelayedColliderFix());
         playerRenderer.material = jump;
+        SoundManager.instance.PlaySound(SoundManager.instance.jump);
         SoundManager.instance.MusicDistort();
 
     }
