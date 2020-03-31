@@ -16,7 +16,9 @@ public class PlayerMovement : MonoBehaviour
     public Renderer playerRenderer;
     public Material idle, jump;
     public float gravityBlackHole, gravityPlanet;
-
+    public ParticleSystem splashParticle;
+    public float jumpForce;
+    public GameObject blackHole;
     //Other
     GameObject currentPlatform;
     Vector3 aimDir;
@@ -24,6 +26,8 @@ public class PlayerMovement : MonoBehaviour
     bool aiming = false, onPlanet, swapped;
     List<Transform> gravityObjectPool = new List<Transform>();
     int trailIndex = 0;
+    float waterWarningCD = 1;
+    bool waterWarningPlayed;
 
     void Start()
     {
@@ -49,7 +53,36 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
+        //Change material color and play warning sound if below 1/3 health
+        if (GameManager.instance.waterRemaining < GameManager.instance.maxWater / 3)
+        {
+            if (!waterWarningPlayed)
+            {
+                waterWarningCD = 0;
+                //SoundManager.instance.PlaySound(SoundManager.instance.waterWarning);
+
+                waterWarningPlayed = true;
+            }
+
+            float r = Mathf.Abs(Mathf.Sin(Time.time * 4)) / 2;
+            waterWarningCD += Time.deltaTime;
+            if (waterWarningCD > 0.5f)
+            {
+                waterWarningCD = 0;
+                SoundManager.instance.PlaySound(SoundManager.instance.waterLow);
+            }
+            playerRenderer.material.color = new Color(0.5f + r, 1-r, 1-r, 1);
+        }
+        else
+        {
+            waterWarningPlayed = false;
+            playerRenderer.material.color = Color.white;
+        }
+
+
+        //Set trail pos
         trails[trailIndex].transform.position = transform.position + Vector3.down * 0.5f;
+
 
         if (!onPlanet)
         {
@@ -59,6 +92,11 @@ public class PlayerMovement : MonoBehaviour
             ApplyGravitation();
 
             Wrap();
+
+            //if (Input.GetKeyDown(KeyCode.Mouse0))
+            //{
+            //    blackHole.transform.position = GetMousePos();
+            //}
 
             return;
         }
@@ -139,17 +177,21 @@ public class PlayerMovement : MonoBehaviour
         }
         
     }
-    
+
+    Vector3 GetMousePos()
+    {
+        RaycastHit hit;
+        Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 50, aimLayer);
+        return hit.point;
+    }
+
     void GetInput()
     {
         if (aiming)
         {
-            //Raycast
-            RaycastHit hit;
-            Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 50, aimLayer);
 
             //Limit vector
-            aimDir = Vector3.MoveTowards(transform.position, hit.point, 5);
+            aimDir = Vector3.MoveTowards(transform.position, GetMousePos(), 5);
             aimDir.y = transform.position.y;
 
             transform.LookAt(aimDir);
@@ -225,16 +267,21 @@ public class PlayerMovement : MonoBehaviour
 
         if (col.tag == "Bubble")
         {
+            splashParticle.transform.position = col.gameObject.transform.position;
             GameManager.instance.EatBubble();
             col.gameObject.SetActive(false);
             PointManager.instance.driftMultiplier++;
-            SoundManager.instance.PlaySound(SoundManager.instance.bubbleEat);
+            SoundManager.instance.PlaySplash();
+            SoundManager.instance.PlaySound(SoundManager.instance.waterDing);
+            splashParticle.Play();
         }
 
         if (col.tag == "BlackHole" && !onPlanet)
         {
-            PointManager.instance.ResetDrift();
-            rb.velocity *= 0.65f;
+            //PointManager.instance.ResetDrift();
+            SoundManager.instance.PlaySound(SoundManager.instance.blackHole);
+
+            rb.velocity *= 1.25f;
         }
 
     }
@@ -262,7 +309,7 @@ public class PlayerMovement : MonoBehaviour
         rb.AddForce(aimDir * 250 * magnitude);
         onPlanet = false;
         line.gameObject.SetActive(false);
-        currentPlatform.GetComponent<Rigidbody>().AddForce(aimDir * -20 * magnitude);
+        currentPlatform.GetComponent<Rigidbody>().AddForce(aimDir * -jumpForce * magnitude);
         PointManager.instance.StartDrift();
         //StartCoroutine(DelayedColliderFix());
         playerRenderer.material = jump;

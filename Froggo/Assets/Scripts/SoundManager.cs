@@ -9,7 +9,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource effects, music;
     public AudioReverbFilter musicFilter;
     public AudioReverbZone revFilter;
-
+    public AudioClip[] randomSplash;
     public AudioClip
         stretch,
         jump,
@@ -17,12 +17,15 @@ public class SoundManager : MonoBehaviour
         land,
         menuClick,
         bubbleEat,
+        waterDing,
         bubbleSpawn,
         combo1,
         combo2,
         combo3,
         waterLow,
-        planetCollision;
+        planetCollision,
+        blackHole,
+        waterWarning;
 
 
     //Private
@@ -39,9 +42,14 @@ public class SoundManager : MonoBehaviour
         effects.PlayOneShot(clip);
     }
 
+    public void PlaySplash()
+    {
+        AudioSource.PlayClipAtPoint(randomSplash[UnityEngine.Random.Range(0, randomSplash.Length)], Camera.main.transform.position, 0.5f);
+    }
+
     public void MusicDistort()
     {
-        distort = StartCoroutine(Distortion());
+        //distort = StartCoroutine(Distortion());
     }
     public void EndDistort()
     {

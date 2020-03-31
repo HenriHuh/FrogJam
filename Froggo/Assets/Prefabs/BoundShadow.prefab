@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8977440125023471442}
   - component: {fileID: 8977440125023471443}
   m_Layer: 0
-  m_Name: BoundShadowV
+  m_Name: BoundShadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -865,7 +865,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 25
+      scalar: 15
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -1304,7 +1304,7 @@ ParticleSystem:
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 0}
-        key1: {r: 0.49938947, g: 0.8207547, b: 0.46070665, a: 0.02745098}
+        key1: {r: 0.49938947, g: 0.8207547, b: 0.46070665, a: 0.03137255}
         key2: {r: 1, g: 1, b: 1, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}

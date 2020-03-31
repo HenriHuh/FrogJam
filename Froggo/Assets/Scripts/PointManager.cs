@@ -9,7 +9,7 @@ public class PointManager : MonoBehaviour
     public static PointManager instance;
 
     //Assign in editor
-    public Text totalPointsTxt, driftPointsTxt;
+    public Text totalPointsTxt, driftPointsTxt, endPointsTxt;
     public Color medColor, highColor, superColor;
 
     //Private
@@ -50,6 +50,12 @@ public class PointManager : MonoBehaviour
         driftMultiplier = 1;
         StartDrift();
     }
+
+    public void End()
+    {
+        endPointsTxt.text = "Total points: " + totalPoints;
+    }
+
     public void EndDrift()
     {
         if (driftRoutine != null)
@@ -102,18 +108,29 @@ public class PointManager : MonoBehaviour
         bool popped1 = false, popped2 = false, popped3 = false;
         Color targetColor = medColor;
 
+        float tick = t;
+
+        AudioClip audio = SoundManager.instance.combo1;
+
         while (true)
         {
             t += Time.deltaTime;
             driftPoints += (int)Mathf.Pow(t, 3);
             //driftPointsTxt.color = Color.Lerp(driftPointsTxt.color, targetColor, Time.deltaTime);
 
+            if (t > tick && popped1)
+            {
+                tick = t + 0.2f;
+                SoundManager.instance.PlaySound(audio);
+            }
+
             if (!popped1 && driftPoints > 1000)
             {
                 driftPointsTxt.fontSize += 4;
                 driftPointsTxt.color = medColor;
                 targetColor = highColor;
-                SoundManager.instance.PlaySound(SoundManager.instance.combo1);
+                //SoundManager.instance.PlaySound(SoundManager.instance.combo1);
+                audio = SoundManager.instance.combo1;
                 PopDriftPoint();
                 popped1 = true;
             }
@@ -122,7 +139,8 @@ public class PointManager : MonoBehaviour
                 driftPointsTxt.fontSize += 4;
                 driftPointsTxt.color = highColor;
                 targetColor = superColor;
-                SoundManager.instance.PlaySound(SoundManager.instance.combo2);
+                //SoundManager.instance.PlaySound(SoundManager.instance.combo2);
+                audio = SoundManager.instance.combo2;
                 PopDriftPoint();
                 popped2 = true;
             }
@@ -131,7 +149,9 @@ public class PointManager : MonoBehaviour
                 driftPointsTxt.fontSize += 4;
                 driftPointsTxt.color = superColor;
                 targetColor = superColor;
-                SoundManager.instance.PlaySound(SoundManager.instance.combo3);
+                //SoundManager.instance.PlaySound(SoundManager.instance.combo3);
+                audio = SoundManager.instance.combo3;
+
                 PopDriftPoint();
                 popped3 = true;
             }

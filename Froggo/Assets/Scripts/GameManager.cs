@@ -20,8 +20,8 @@ public class GameManager : MonoBehaviour
     //Private
     Coroutine waterPop;
     Vector3 waterTankScale;
-    float waterRemaining;
     bool end;
+    [HideInInspector] public float waterRemaining;
     [HideInInspector] public bool started = false;
 
     void Start()
@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
     public void EatBubble()
     {
         waterRemaining = waterRemaining + 5 > maxWater ? maxWater : waterRemaining + 5;
-        Invoke("NewBubble", Random.Range(1.0f,3.0f));
+        Invoke("NewBubble", Random.Range(2.0f,4.0f));
         if (waterPop != null)
         {
             StopCoroutine(waterPop);
@@ -94,6 +94,8 @@ public class GameManager : MonoBehaviour
         gameUI.SetActive(false);
         endScreen.SetActive(true);
         Time.timeScale = 0;
+        PointManager.instance.End();
+        started = false;
     }
 
     public void StartGame()
