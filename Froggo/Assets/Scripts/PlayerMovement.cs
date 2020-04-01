@@ -7,6 +7,11 @@ public class PlayerMovement : MonoBehaviour
     //Handles input, gravity and collisions
 
 
+
+    //Instance
+    public static PlayerMovement instance;
+
+
     //Assign in editor
     public LayerMask aimLayer;
     public LineRenderer line;
@@ -19,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
     public ParticleSystem splashParticle;
     public float jumpForce;
     public GameObject blackHole;
+
+
     //Other
     GameObject currentPlatform;
     Vector3 aimDir;
@@ -31,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        instance = this;
         Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), aimCollider);
         rb = gameObject.GetComponent<Rigidbody>();
         line.gameObject.SetActive(false);

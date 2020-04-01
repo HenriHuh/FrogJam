@@ -28,6 +28,8 @@ public class PointManager : MonoBehaviour
 
     public void StartDrift()
     {
+        driftPointsTxt.fontSize = driftStartFont;
+        driftPointsTxt.color = Color.white;
         driftRoutine = StartCoroutine(Drift());
         driftMultiplier = 1;
         if (fadeTextRoutine != null)
@@ -35,8 +37,6 @@ public class PointManager : MonoBehaviour
             StopCoroutine(fadeTextRoutine);
             driftPointsTxt.fontSize = driftStartFont;
         }
-        driftPointsTxt.color = Color.white;
-        driftPointsTxt.fontSize = driftStartFont;
     }
 
     public void ResetDrift()
@@ -86,6 +86,7 @@ public class PointManager : MonoBehaviour
         PopDriftPoint();
         totalPointsTxt.text = totalPoints.ToString();
         fadeTextRoutine = StartCoroutine(FadeText(driftPointsTxt));
+        ChangeTrailColor(0);
     }
 
     IEnumerator FadeText(Text text)
@@ -99,6 +100,31 @@ public class PointManager : MonoBehaviour
         }
         text.color = Color.clear;
         yield return null;
+    }
+
+    void ChangeTrailColor(int rarity)
+    {
+        Color clr;
+        switch (rarity)
+        {
+            case 1:
+                clr = medColor;
+                break;
+            case 2:
+                clr = highColor;
+                break;
+            case 3:
+                clr = superColor;
+                break;
+            default:
+                clr = Color.white;
+                break;
+        }
+
+        foreach (TrailRenderer t in PlayerMovement.instance.trails)
+        {
+            t.startColor = clr;
+        }
     }
 
     IEnumerator Drift()
@@ -129,6 +155,7 @@ public class PointManager : MonoBehaviour
                 driftPointsTxt.fontSize += 4;
                 driftPointsTxt.color = medColor;
                 targetColor = highColor;
+                ChangeTrailColor(1);
                 //SoundManager.instance.PlaySound(SoundManager.instance.combo1);
                 audio = SoundManager.instance.combo1;
                 PopDriftPoint();
@@ -139,6 +166,7 @@ public class PointManager : MonoBehaviour
                 driftPointsTxt.fontSize += 4;
                 driftPointsTxt.color = highColor;
                 targetColor = superColor;
+                ChangeTrailColor(2);
                 //SoundManager.instance.PlaySound(SoundManager.instance.combo2);
                 audio = SoundManager.instance.combo2;
                 PopDriftPoint();
@@ -149,6 +177,7 @@ public class PointManager : MonoBehaviour
                 driftPointsTxt.fontSize += 4;
                 driftPointsTxt.color = superColor;
                 targetColor = superColor;
+                ChangeTrailColor(3);
                 //SoundManager.instance.PlaySound(SoundManager.instance.combo3);
                 audio = SoundManager.instance.combo3;
 
